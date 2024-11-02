@@ -13,13 +13,25 @@ import {
 
 const router = express.Router();
 
-// Map routes to controller functions
-router.get('/', getAllUsers); // GET /api/users
-router.get('/paginate', getPaginatedUsers); // GET /api/users/paginate
-router.get('/:id', getUserById); // GET /api/users/:id
-router.post('/register', addUser); // POST /api/users/register
-router.post('/authenticate', authenticateUser); // POST /api/users/authenticate
-router.put('/:id', updateUser); // PUT /api/users/:id
-router.delete('/:id', deleteUser); // DELETE /api/users/:id
+// Route for fetching all users
+router.get('/', getAllUsers);
+
+// Route for fetching paginated users with optional search
+router.get('/paginate', getPaginatedUsers);
+
+// Route for fetching a single user by ID
+router.get('/:id', getUserById);
+
+// Route for adding a new user
+router.post('/register', addUser);
+
+// Route for authenticating username and password
+router.post('/authenticate', authenticateUser);
+
+// Route for updating a user by ID
+router.put('/:id', updateUser);
+
+// Route for deleting a user by ID
+router.delete('/:id', deleteUser);
 
 export default router;

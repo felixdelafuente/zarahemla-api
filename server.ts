@@ -3,6 +3,7 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import connectDB from "./src/config/db";
 import userRoutes from "./src/routes/userRoutes";
+import inventoryRoutes from "./src/routes/inventoryRoutes";
 import dotenv from "dotenv";
 
 dotenv.config(); // Load environment variables
@@ -14,8 +15,9 @@ connectDB(); // Establish database connection
 app.use(cors());
 app.use(bodyParser.json());
 
-// Mount User routes under /api/users path
+// Route handling
 app.use("/api/users", userRoutes);
+app.use('/api/inventory', inventoryRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
