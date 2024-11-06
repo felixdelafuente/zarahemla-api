@@ -93,12 +93,17 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
 /**
  * Delete a user by ID.
  */
-export const deleteUser = async (req: Request, res: Response): Promise<void> => {
+export const deleteUsers = async (req: Request, res: Response): Promise<void> => {
   try {
-    const user = await User.findByIdAndDelete(req.params.id);
-    if (!user) res.status(404).json({ message: 'User not found' });
-    res.json({ message: 'User deleted successfully' });
-  } catch (error:any) {
+    const { ids } = req.body;
+
+    if (!Array.isArray(ids)) {
+      res.status(400).json({ error: 'IDs must be an array' });
+    }
+
+    const result = await User.deleteMany({ _id: { $in: ids } });
+    res.json({ message: `${result.deletedCount} user/s deleted` });
+  } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
 };

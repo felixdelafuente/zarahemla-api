@@ -5,7 +5,7 @@ import {
   getPaginatedInventoryItems,
   addInventoryItem, // Import the new controller
   updateInventoryItem,
-  deleteInventoryItem,
+  deleteInventoryItems,
 } from '../controllers/inventoryController';
 
 const router = express.Router();
@@ -25,7 +25,7 @@ router.post('/', addInventoryItem);
 // Route for updating an inventory item by ID
 router.put('/:id', updateInventoryItem);
 
-// Route for deleting an inventory item by ID
-router.delete('/:id', deleteInventoryItem);
+// Route for deleting inventory items by ID
+router.delete('/', deleteInventoryItems);
 
 export default router;

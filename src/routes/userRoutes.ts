@@ -6,7 +6,7 @@ import {
   getUserById,
   getPaginatedUsers,
   updateUser,
-  deleteUser,
+  deleteUsers,
   authenticateUser,
   addUser,
 } from '../controllers/userController';
@@ -31,7 +31,7 @@ router.post('/authenticate', authenticateUser);
 // Route for updating a user by ID
 router.put('/:id', updateUser);
 
-// Route for deleting a user by ID
-router.delete('/:id', deleteUser);
+// Route for deleting users by ID
+router.delete('/', deleteUsers);
 
 export default router;

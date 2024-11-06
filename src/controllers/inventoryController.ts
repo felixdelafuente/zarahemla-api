@@ -55,15 +55,18 @@ export const getPaginatedInventoryItems = async (req: Request, res: Response) =>
  */
 export const addInventoryItem = async (req: Request, res: Response) => {
   try {
-    const { name, category, quantity, dateIssued, description, costPrice, sellingPrice } = req.body;
+    const { brand, name, description, category, size, quantity, unit, dateIssued, costPrice, sellingPrice } = req.body;
 
     // Create a new inventory item with the provided data
     const newItem = new Inventory({
+      brand,
       name,
-      category,
-      quantity,
-      dateIssued,
       description,
+      category,
+      size,
+      quantity,
+      unit,
+      dateIssued,
       costPrice,
       sellingPrice,
     });
@@ -93,11 +96,16 @@ export const updateInventoryItem = async (req: Request, res: Response): Promise<
 /**
  * Delete an inventory item by ID
  */
-export const deleteInventoryItem = async (req: Request, res: Response): Promise<void> => {
+export const deleteInventoryItems = async (req: Request, res: Response): Promise<void> => {
   try {
-    const item = await Inventory.findByIdAndDelete(req.params.id);
-    if (!item) res.status(404).json({ error: 'Item not found' });
-    res.json({ message: 'Item deleted successfully' });
+    const { ids } = req.body;
+
+    if (!Array.isArray(ids)) {
+      res.status(400).json({ error: 'IDs must be an array' });
+    }
+
+    const result = await Inventory.deleteMany({ _id: { $in: ids } });
+    res.json({ message: `${result.deletedCount} inventory item/s deleted` });
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
