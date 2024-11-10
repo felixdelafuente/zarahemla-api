@@ -55,19 +55,16 @@ export const getPaginatedInventoryItems = async (req: Request, res: Response) =>
  */
 export const addInventoryItem = async (req: Request, res: Response) => {
   try {
-    const { brand, name, description, category, size, quantity, unit, dateIssued, costPrice, sellingPrice } = req.body;
+    const { category, size, brand, description, quantity, unit, sellingPrice} = req.body;
 
     // Create a new inventory item with the provided data
     const newItem = new Inventory({
-      brand,
-      name,
-      description,
       category,
       size,
+      brand,
+      description,
       quantity,
       unit,
-      dateIssued,
-      costPrice,
       sellingPrice,
     });
 
