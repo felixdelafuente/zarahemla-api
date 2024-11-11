@@ -9,6 +9,7 @@ import serviceRoutes from "./src/routes/serviceRoutes";
 import clientRoutes from "./src/routes/clientRoutes";
 import discountRoutes from "./src/routes/discountRoutes";
 import vehicleRoutes from "./src/routes/vehicleRoutes";
+import salesRoutes from "./src/routes/salesRoutes";
 
 dotenv.config(); // Load environment variables
 
@@ -26,6 +27,7 @@ app.use('/api/services', serviceRoutes);
 app.use('/api/clients', clientRoutes);
 app.use('/api/client/discounts', discountRoutes);
 app.use('/api/client/vehicles', vehicleRoutes);
+app.use('/api/sales', salesRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
