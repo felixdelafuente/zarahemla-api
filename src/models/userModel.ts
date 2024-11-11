@@ -1,21 +1,26 @@
-import mongoose, { Document, Schema } from 'mongoose';
+import mongoose, { Schema, Document } from "mongoose";
 
-/**
- * Interface representing a User document in MongoDB.
- */
 export interface IUser extends Document {
   username: string;
   password: string;
   name: string;
   accountType: string;
+  access: {
+    trading: string[];  // Array of strings for trading access
+    services: string[]; // Array of strings for services access
+  }[];
 }
 
-// Define the schema for the User model with validation and constraints
-const userSchema: Schema = new Schema({
-  username: { type: String, required: true, unique: true }, // Unique to prevent duplicate usernames
-  password: { type: String, required: true }, // Will be hashed before saving
+const UserSchema: Schema = new Schema({
+  username: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
   name: { type: String, required: true },
-  accountType: { type: String, required: true }, // E.g., "Cashier", "Clerk", or "Admin"
+  accountType: { type: String, required: true },
+  access: [{
+    trading: { type: [String], default: [] },  // Array of strings for trading access
+    services: { type: [String], default: [] }  // Array of strings for services access
+  }]
 });
 
-export default mongoose.model<IUser>('User', userSchema);
+const User = mongoose.model<IUser>('User', UserSchema);
+export default User;

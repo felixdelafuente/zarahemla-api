@@ -9,7 +9,7 @@ export const getAllUsers = async (req: Request, res: Response) => {
   try {
     const users = await User.find();
     res.json(users); // Send the list of users as JSON
-  } catch (error:any) {
+  } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
 };
@@ -22,7 +22,7 @@ export const getUserById = async (req: Request, res: Response): Promise<void> =>
     const user = await User.findById(req.params.id);
     if (!user) res.status(404).json({ message: 'User not found' });
     res.json(user);
-  } catch (error:any) {
+  } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
 };
@@ -51,41 +51,42 @@ export const getPaginatedUsers = async (req: Request, res: Response) => {
   }
 };
 
-
 /**
  * Add a new user (registration). Hashes password before saving.
+ * Now accepts "access" field.
  */
 export const addUser = async (req: Request, res: Response): Promise<void> => {
-  const { username, password, name, accountType } = req.body;
+  const { username, password, name, accountType, access } = req.body;
 
   try {
     const existingUser = await User.findOne({ username });
     if (existingUser) res.status(400).json({ message: 'Username already exists' });
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({ username, password: hashedPassword, name, accountType });
+    const newUser = new User({ username, password: hashedPassword, name, accountType, access });
     
     await newUser.save();
     res.status(201).json(newUser); // 201 Created
-  } catch (error:any) {
+  } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
 };
 
 /**
  * Update user data by ID. Updates only fields provided in the request body.
+ * Now allows updating "access" field.
  */
 export const updateUser = async (req: Request, res: Response): Promise<void> => {
-  const { username, password, name, accountType } = req.body;
+  const { username, password, name, accountType, access } = req.body;
 
   try {
-    const updatedData: Partial<IUser> = { username, name, accountType };
+    const updatedData: Partial<IUser> = { username, name, accountType, access };
     if (password) updatedData.password = await bcrypt.hash(password, 10); // Hash new password if provided
 
     const user = await User.findByIdAndUpdate(req.params.id, updatedData, { new: true });
     if (!user) res.status(404).json({ message: 'User not found' });
     res.json(user);
-  } catch (error:any) {
+  } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
 };
@@ -110,7 +111,7 @@ export const deleteUsers = async (req: Request, res: Response): Promise<void> =>
 
 /**
  * Authenticate user by checking username and password.
- * If valid, returns user's name and account type.
+ * If valid, returns user's name, account type, and access rights.
  */
 export const authenticateUser = async (req: Request, res: Response): Promise<void> => {
   const { username, password } = req.body;
@@ -128,8 +129,9 @@ export const authenticateUser = async (req: Request, res: Response): Promise<voi
       return;
     }
 
-    res.json({ id: user._id , name: user.name, accountType: user.accountType });
-  } catch (error:any) {
+    // Return user data including access rights
+    res.json({ id: user._id, name: user.name, accountType: user.accountType, access: user.access });
+  } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
 };
