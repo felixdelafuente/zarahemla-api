@@ -33,7 +33,7 @@ export const getUserById = async (req: Request, res: Response): Promise<void> =>
  */
 export const getPaginatedUsers = async (req: Request, res: Response) => {
   const { pageNumber = '1', searchInput = '' } = req.query;
-  const limit = 10;
+  const limit = 5;
   const skip = (parseInt(pageNumber as string) - 1) * limit;
 
   try {

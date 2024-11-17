@@ -17,7 +17,9 @@ const app = express();
 connectDB(); // Establish database connection
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  exposedHeaders: ['Pagination'] // Expose the 'Pagination' header to the client
+}));
 app.use(bodyParser.json());
 
 // Route handling
