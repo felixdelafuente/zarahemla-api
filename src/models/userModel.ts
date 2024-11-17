@@ -9,6 +9,7 @@ export interface IUser extends Document {
     trading: string[];  // Array of strings for trading access
     services: string[]; // Array of strings for services access
   }[];
+  createdAt: Date;
 }
 
 const UserSchema: Schema = new Schema({
@@ -19,7 +20,8 @@ const UserSchema: Schema = new Schema({
   access: [{
     trading: { type: [String], default: [] },  // Array of strings for trading access
     services: { type: [String], default: [] }  // Array of strings for services access
-  }]
+  }],
+  createdAt: { type: Date, default: Date.now }
 });
 
 const User = mongoose.model<IUser>('User', UserSchema);
