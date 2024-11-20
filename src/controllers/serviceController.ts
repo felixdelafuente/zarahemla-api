@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import Service from '../models/serviceModel';
-import Inventory from '../models/inventoryModel'; // Assuming this exists
+import Inventory from '../models/tradingModel'; // Assuming this exists
 
 // Add new service item
 export const addService = async (req: Request, res: Response) => {

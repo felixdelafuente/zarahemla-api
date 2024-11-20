@@ -7,7 +7,7 @@ export interface IService extends Document {
   duration: string;
   frequency: string;
   sellingPrice: number;
-  parts: Types.ObjectId[];  // Array of Inventory item ObjectIds
+  parts: Types.ObjectId[];  // Array of Trading item ObjectIds
 }
 
 // Define the schema for Service collection
@@ -17,7 +17,7 @@ const ServiceSchema: Schema = new Schema({
   duration: { type: String, required: true },
   frequency: { type: String, required: true },
   sellingPrice: { type: Number, required: true },
-  parts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Inventory', required: true }]
+  parts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Trading', required: true }]
 });
 
 export default mongoose.model<IService>('Service', ServiceSchema);

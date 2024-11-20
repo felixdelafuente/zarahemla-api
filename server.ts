@@ -3,7 +3,7 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import connectDB from "./src/config/db";
 import userRoutes from "./src/routes/userRoutes";
-import inventoryRoutes from "./src/routes/inventoryRoutes";
+import tradingRoutes from "./src/routes/tradingRoutes";
 import dotenv from "dotenv";
 import serviceRoutes from "./src/routes/serviceRoutes";
 import clientRoutes from "./src/routes/clientRoutes";
@@ -24,7 +24,7 @@ app.use(bodyParser.json());
 
 // Route handling
 app.use("/api/users", userRoutes);
-app.use('/api/inventory', inventoryRoutes);
+app.use('/api/tradings', tradingRoutes);
 app.use('/api/services', serviceRoutes);
 app.use('/api/clients', clientRoutes);
 app.use('/api/client/discounts', discountRoutes);
