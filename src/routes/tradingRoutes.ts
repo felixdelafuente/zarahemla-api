@@ -7,6 +7,7 @@ import {
   updateTradingItem,
   deleteTradingItems,
   addQuantityToTradingItem,
+  getLowStockTradingItems,
 } from '../controllers/tradingController';
 
 const router = express.Router();
@@ -16,6 +17,9 @@ router.get('/', getAllTradingItems);
 
 // Route for fetching paginated items with optional search
 router.get('/paginate', getPaginatedTradingItems);
+
+// Route for fetching items with quantity less than 10
+router.get('/low-stock', getLowStockTradingItems);
 
 // Route for fetching a single item by ID
 router.get('/:id', getTradingItemById);

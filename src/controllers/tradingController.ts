@@ -51,6 +51,15 @@ export const getPaginatedTradingItems = async (req: Request, res: Response) => {
   }
 };
 
+export const getLowStockTradingItems = async (req: Request, res: Response) => {
+  try {
+    const items = await Trading.find({ quantity: { $lt: 10 } }); // Find items with quantity less than 10
+    res.json(items); // Return the matching items
+  } catch (error: any) {
+    res.status(500).json({ error: error.message }); // Handle errors
+  }
+};
+
 /**
  * Add/delete quantity to an existing trading item's current quantity
  */
