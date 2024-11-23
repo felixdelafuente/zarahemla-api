@@ -40,7 +40,8 @@ export const getPaginatedDiscounts = async (req: Request, res: Response) => {
     const filter: any = {};
 
     if (searchInput) {
-      filter.name = { $regex: searchInput, $options: 'i' }; // Case-insensitive search on name
+      let loyaltyNumberInput = Number(searchInput);
+      filter.loyaltyNumber = { $regex: loyaltyNumberInput, $options: 'i' }; // Case-insensitive search on name
     }
 
     if (clientId) {
