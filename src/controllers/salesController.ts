@@ -31,20 +31,24 @@ export const getSaleById = async (req: Request, res: Response): Promise<void> =>
  * Adds pagination metadata to the response header
  */
 export const getPaginatedSales = async (req: Request, res: Response) => {
-  const { pageNumber = 1, searchInput = '', clientId = '' } = req.query;
+  const { pageNumber = 1, searchInput = '', clientId = '', branch = '' } = req.query; // Add 'branch' to the query parameters
   const limit = 10;
   const skip = (parseInt(pageNumber as string) - 1) * limit;
 
   try {
-    // Build the filter object based on searchInput and clientId
+    // Build the filter object based on searchInput, clientId, and branch
     const filter: any = {};
 
     if (searchInput) {
-      filter.branch = { $regex: searchInput, $options: 'i' }; // Case-insensitive search on branch
+      filter.transactionNumber = { $regex: searchInput, $options: 'i' }; // Case-insensitive search on transactionNumber
     }
 
     if (clientId) {
       filter.client = clientId; // Filter by client ID if provided
+    }
+
+    if (branch) {
+      filter.branch = branch; // Filter by branch if provided
     }
 
     // Find sales matching filter criteria
