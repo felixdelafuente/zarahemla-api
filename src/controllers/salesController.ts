@@ -31,7 +31,7 @@ export const getSaleById = async (req: Request, res: Response): Promise<void> =>
  * Adds pagination metadata to the response header
  */
 export const getPaginatedSales = async (req: Request, res: Response) => {
-  const { pageNumber = 1, searchInput = '', clientId = '', branch = '' } = req.query; // Add 'branch' to the query parameters
+  const { pageNumber = 1, searchInput = '', clientId = '', branch = '' } = req.query;
   const limit = 10;
   const skip = (parseInt(pageNumber as string) - 1) * limit;
 
@@ -51,8 +51,9 @@ export const getPaginatedSales = async (req: Request, res: Response) => {
       filter.branch = branch; // Filter by branch if provided
     }
 
-    // Find sales matching filter criteria
+    // Find sales matching filter criteria and sort by dateIssued in descending order
     const sales = await Sales.find(filter)
+      .sort({ dateIssued: -1 }) // Sort by dateIssued descending
       .skip(skip)
       .limit(limit)
       .populate('client')
@@ -67,6 +68,7 @@ export const getPaginatedSales = async (req: Request, res: Response) => {
     res.status(500).json({ error: error.message });
   }
 };
+
 
 /**
  * Add a new sale
