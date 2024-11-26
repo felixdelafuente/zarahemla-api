@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import Sales from '../models/salesModel';
+import Sales, {ISales} from '../models/salesModel';
 
 /**
  * Fetch all sales
@@ -69,6 +69,94 @@ export const getPaginatedSales = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Generate a sales report based on date, week, month, and year filters
+ */
+export const salesReport = async (req: Request, res: Response): Promise<void> => {
+  const { date, week, month, year } = req.query;
+
+  try {
+    // If no filters are provided, fetch all sales
+    const filter: any = {};
+
+    if (!month && !year) {
+      // If month and year are not provided, fetch all sales
+      const sales = await Sales.find(filter)
+        .sort({ dateIssued: -1 })
+        .populate('client')
+        .populate('cart.item');
+      res.json(sales);
+      return;
+    }
+
+    // If month and year are provided, apply filters
+    if (!month || !year) {
+      res.status(400).json({ error: "Month and year are required for date or week filtering." });
+      return;
+    }
+
+    const yearValue = Number(year);
+    const monthValue = Number(month) - 1; // JavaScript months are 0-based
+
+    if (date) {
+      // Validate and calculate date range for the specified day
+      const day = Number(date);
+      const specificDate = new Date(yearValue, monthValue, day);
+      if (specificDate.getMonth() !== monthValue) {
+        res.status(400).json({ error: "Invalid date for the given month." });
+        return;
+      }
+      const nextDay = new Date(yearValue, monthValue, day + 1);
+      filter.dateIssued = {
+        $gte: specificDate,
+        $lt: nextDay,
+      };
+      return;
+    }
+
+    if (week) {
+      // Validate and calculate the date range for the specified week
+      const weekNumber = Number(week);
+      if (weekNumber < 1 || weekNumber > 4) {
+        res.status(400).json({ error: "Week must be between 1 and 4." });
+        return;
+      }
+
+      const startOfWeek = new Date(yearValue, monthValue, (weekNumber - 1) * 7 + 1);
+      const endOfWeek = new Date(yearValue, monthValue, weekNumber * 7 + 1);
+      if (startOfWeek.getMonth() !== monthValue) {
+        res.status(400).json({ error: "Invalid week for the given month." });
+        return;
+      }
+      filter.dateIssued = {
+        $gte: startOfWeek,
+        $lt: endOfWeek,
+      };
+      return;
+    }
+
+    // Default filter if only month and year are provided
+    if (!date && !week) {
+      filter.dateIssued = {
+        $gte: new Date(yearValue, monthValue, 1),
+        $lt: new Date(yearValue, monthValue + 1, 1),
+      };
+      return;
+    }
+
+    // Query the database with the constructed filter
+    const sales = await Sales.find(filter)
+      .sort({ dateIssued: -1 })
+      .populate('client')
+      .populate('cart.item');
+
+    res.json(sales);
+    return;
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+    return;
+  }
+};
 
 /**
  * Add a new sale
@@ -110,6 +198,43 @@ export const updateSale = async (req: Request, res: Response): Promise<void> => 
     res.status(500).json({ error: error.message });
   }
 };
+
+/**
+ * Update the paid property and optionally the recurring property of a sale
+ */
+export const updatePaidAndRecurring = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params; // Sale ID from request params
+    const { paid, recurring } = req.body; // Properties to update
+
+    // Prepare the update object with only allowed fields
+    const update: Partial<ISales> = {};
+    if (typeof paid === 'boolean') {
+      update.paid = paid;
+    }
+    if (typeof recurring === 'boolean') {
+      update.recurring = recurring;
+    }
+
+    // Update the sale with specified fields
+    const updatedSale = await Sales.findByIdAndUpdate(
+      id,
+      { $set: update },
+      { new: true } // Return the updated document
+    ).populate('client').populate('cart.item');
+
+    // Handle case when the sale is not found
+    if (!updatedSale) {
+      res.status(404).json({ error: 'Sale not found' });
+      return;
+    }
+
+    res.json(updatedSale);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 
 /**
  * Delete sales by ID

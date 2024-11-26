@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 
-interface ISales extends Document {
+export interface ISales extends Document {
   transactionNumber: number;
   branch: string;
   client: mongoose.Types.ObjectId;
