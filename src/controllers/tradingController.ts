@@ -27,7 +27,7 @@ export const getTradingItemById = async (req: Request, res: Response): Promise<v
 };
 
 /**
- * Get paginated list of trading items based on brand search and page number.
+ * Get paginated list of trading items based on size search and page number.
  * Adds pagination metadata to the response header.
  */
 export const getPaginatedTradingItems = async (req: Request, res: Response) => {
@@ -36,12 +36,12 @@ export const getPaginatedTradingItems = async (req: Request, res: Response) => {
   const skip = (parseInt(pageNumber as string) - 1) * limit;
 
   try {
-    // Search by brand (case insensitive)
-    const items = await Trading.find({ brand: { $regex: searchInput, $options: 'i' } })
+    // Search by size (case insensitive)
+    const items = await Trading.find({ size: { $regex: searchInput, $options: 'i' } })
       .skip(skip)
       .limit(limit);
 
-    const totalItems = await Trading.countDocuments({ brand: { $regex: searchInput, $options: 'i' } });
+    const totalItems = await Trading.countDocuments({ size: { $regex: searchInput, $options: 'i' } });
 
     // Set pagination metadata in the response headers
     res.set('Pagination', JSON.stringify({ currentPage: pageNumber, totalItems }));
