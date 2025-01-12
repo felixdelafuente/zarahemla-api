@@ -43,15 +43,16 @@ const getSaleById = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 });
 exports.getSaleById = getSaleById;
 /**
- * Fetch paginated sales based on search input, client ID, and page number
+ * Fetch paginated sales based on search input, client ID, branch, and paid status
  * Adds pagination metadata to the response header
  */
 const getPaginatedSales = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { pageNumber = 1, searchInput = '', clientId = '', branch = '' } = req.query;
+    const { pageNumber = 1, searchInput = '', clientId = '', branch = '', paid, // Extract the optional `paid` parameter
+     } = req.query;
     const limit = 10;
     const skip = (parseInt(pageNumber) - 1) * limit;
     try {
-        // Build the filter object based on searchInput, clientId, and branch
+        // Build the filter object based on searchInput, clientId, branch, and paid
         const filter = {};
         if (searchInput) {
             filter.transactionNumber = { $regex: searchInput, $options: 'i' }; // Case-insensitive search on transactionNumber
@@ -61,6 +62,10 @@ const getPaginatedSales = (req, res) => __awaiter(void 0, void 0, void 0, functi
         }
         if (branch) {
             filter.branch = branch; // Filter by branch if provided
+        }
+        if (paid !== undefined) {
+            // Convert `paid` to a boolean dynamically and filter only if provided
+            filter.paid = paid === 'true' ? true : paid === 'false' ? false : undefined;
         }
         // Find sales matching filter criteria and sort by dateIssued in descending order
         const sales = yield salesModel_1.default.find(filter)

@@ -43,7 +43,7 @@ const getTradingItemById = (req, res) => __awaiter(void 0, void 0, void 0, funct
 });
 exports.getTradingItemById = getTradingItemById;
 /**
- * Get paginated list of trading items based on brand search and page number.
+ * Get paginated list of trading items based on size search and page number.
  * Adds pagination metadata to the response header.
  */
 const getPaginatedTradingItems = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -51,11 +51,11 @@ const getPaginatedTradingItems = (req, res) => __awaiter(void 0, void 0, void 0,
     const limit = 10; // Number of items per page
     const skip = (parseInt(pageNumber) - 1) * limit;
     try {
-        // Search by brand (case insensitive)
-        const items = yield tradingModel_1.default.find({ brand: { $regex: searchInput, $options: 'i' } })
+        // Search by size (case insensitive)
+        const items = yield tradingModel_1.default.find({ size: { $regex: searchInput, $options: 'i' } })
             .skip(skip)
             .limit(limit);
-        const totalItems = yield tradingModel_1.default.countDocuments({ brand: { $regex: searchInput, $options: 'i' } });
+        const totalItems = yield tradingModel_1.default.countDocuments({ size: { $regex: searchInput, $options: 'i' } });
         // Set pagination metadata in the response headers
         res.set('Pagination', JSON.stringify({ currentPage: pageNumber, totalItems }));
         res.json(items);
