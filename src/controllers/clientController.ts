@@ -55,10 +55,11 @@ export const getPaginatedClients = async (req: Request, res: Response) => {
  */
 export const addClient = async (req: Request, res: Response) => {
   try {
-    const { name, email, contact, dateIssued} = req.body;
+    const { company, name, email, contact, dateIssued} = req.body;
 
     // Create a new client with the provided data
     const newClient = new Client({
+      company,
       name,
       email,
       contact,
